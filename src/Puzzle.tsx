@@ -199,6 +199,29 @@ export const Puzzle = () => {
     return true;
   };
 
+  const handleMove = (position: number) => {
+    const emptyIndex = tiles.indexOf(-1);
+    const emptyRow = Math.floor(emptyIndex / columns);
+    const emptyCol = emptyIndex % columns;
+
+    const row = Math.floor(position / columns);
+    const col = position % columns;
+
+    if (
+      (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+      (col === emptyCol && Math.abs(row - emptyRow) === 1)
+    ) {
+      const newTiles = [...tiles];
+      const indexDiff = position - emptyIndex;
+      const step = indexDiff > 0 ? 1 : -1;
+      for (let i = emptyIndex; i !== position; i += step) {
+        newTiles[i] = newTiles[i + step];
+      }
+      newTiles[position] = -1;
+      setTiles(newTiles);
+    }
+  };
+
   return (
     <PuzzleWrapper>
       <h1>N-pussel</h1>
