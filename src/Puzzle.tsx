@@ -44,8 +44,13 @@ const Button = styled.button`
   }
 `;
 
-const rows = 5;
-const columns = 5;
+const Gif = styled.iframe`
+  border: 0;
+  margin-top: 1rem;
+`;
+
+const rows = 3;
+const columns = 3;
 
 const getShuffledArray = (arr: (number | null)[]) => {
   const result = [...arr];
@@ -172,9 +177,31 @@ export const Puzzle = () => {
     setBoard(newBoard);
   };
 
+  const isPuzzleSolved = () => {
+    const expectedValues = [...values];
+    expectedValues.sort();
+
+    let i = 0;
+    let j = 0;
+    for (const expectedValue of expectedValues) {
+      if (board[i][j] !== expectedValue) {
+        return false;
+      }
+
+      if (j === columns - 1) {
+        i++;
+        j = 0;
+      } else {
+        j++;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <PuzzleWrapper>
-      <h1>N-puzzle</h1>
+      <h1>N-pussel</h1>
       <StyledPuzzle columns={columns} rows={rows}>
         {board.map((row, i) => {
           return row.map((value, j) => {
@@ -188,7 +215,12 @@ export const Puzzle = () => {
           });
         })}
       </StyledPuzzle>
-      <Button onClick={shuffleBoard}>Shuffle</Button>
+      <Button onClick={shuffleBoard}>Slumpa</Button>
+      {isPuzzleSolved() && (
+        <>
+          <Gif src="https://giphy.com/embed/3otPoS81loriI9sO8o" />
+        </>
+      )}
     </PuzzleWrapper>
   );
 };
