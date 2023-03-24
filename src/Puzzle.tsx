@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import { Tile } from "./Tile";
 
-const rows = 3;
-const columns = 3;
+const rows = 4;
+const columns = 4;
 
 type PuzzleProps = {
   rows?: number;
@@ -21,6 +21,13 @@ const PuzzleWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 3rem;
+
+  @media (max-width: 375px) {
+    padding: 2rem;
+    .h1 {
+      font-size: 1.5rem;
+    }
+  }
 `;
 
 const StyledPuzzle = styled.div<PuzzleProps>`
