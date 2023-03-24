@@ -3,7 +3,6 @@ import styled from "styled-components";
 type TileProps = {
   value: number | null;
   onMove: () => void;
-
 };
 
 const TileWrapper = styled.div<{ isClickable: boolean }>`
@@ -37,7 +36,5 @@ export const Tile = ({ value, onMove }: TileProps) => {
         <TileWrapper isClickable={isClickable}>{value}</TileWrapper>
       )}
     </>
-
-
   );
 };

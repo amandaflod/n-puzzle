@@ -2,10 +2,16 @@ import styled from "styled-components";
 import { useState } from "react";
 import { Tile } from "./Tile";
 
+const rows = 3;
+const columns = 3;
+
 type PuzzleProps = {
-  rows: number;
-  columns: number;
+  rows?: number;
+  columns?: number;
 };
+
+type Position = [number, number];
+type Value = number | null;
 
 const PuzzleWrapper = styled.div`
   max-width: 500px;
@@ -49,9 +55,6 @@ const Gif = styled.iframe`
   margin-top: 1rem;
 `;
 
-const rows = 3;
-const columns = 3;
-
 const getShuffledArray = (arr: (number | null)[]) => {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
@@ -68,7 +71,7 @@ const values = getShuffledArray([
     .map((_, i) => i + 1),
 ]);
 
-const inclusiveRange = (a: number, b: number) => {
+const inclusiveRange = (a: number, b: number): number[] => {
   const min = Math.min(a, b);
   const max = Math.max(a, b);
 
@@ -84,12 +87,15 @@ const inclusiveRange = (a: number, b: number) => {
   return list;
 };
 
-const getPositionsBetween = (pos1: number[], pos2: number[]) => {
+const getPositionsBetween = (
+  pos1: Position,
+  pos2: Position
+): Position[] | null => {
   const [i1, j1] = pos1;
   const [i2, j2] = pos2;
 
   if (i1 === i2) {
-    const result = [];
+    const result: Position[] = [];
     for (const j of inclusiveRange(j1, j2)) {
       result.push([i1, j]);
     }
@@ -97,7 +103,7 @@ const getPositionsBetween = (pos1: number[], pos2: number[]) => {
   }
 
   if (j1 === j2) {
-    const result = [];
+    const result: Position[] = [];
     for (const i of inclusiveRange(i1, i2)) {
       result.push([i, j1]);
     }
@@ -108,7 +114,7 @@ const getPositionsBetween = (pos1: number[], pos2: number[]) => {
 };
 
 export const Puzzle = () => {
-  const [board, setBoard] = useState(() =>
+  const [board, setBoard] = useState<Array<Array<number | null>>>(() =>
     Array(rows)
       .fill(null)
       .map((_, i) =>
@@ -118,7 +124,7 @@ export const Puzzle = () => {
       )
   );
 
-  const setPos = (pos: number[], val: number | null) => {
+  const setPos = (pos: Position, val: Value) => {
     setBoard((prevBoard) => {
       const newBoard = [...prevBoard];
       const [i, j] = pos;
@@ -127,7 +133,7 @@ export const Puzzle = () => {
     });
   };
 
-  const getPosOfNull = () => {
+  const getPosOfNull = (): Position => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
         if (board[i][j] === null) {
@@ -135,11 +141,12 @@ export const Puzzle = () => {
         }
       }
     }
+    throw new Error("Invalid state");
   };
 
-  const getValue = (pos: number[]) => board[pos[0]][pos[1]];
+  const getValue = (pos: Position): Value => board[pos[0]][pos[1]];
 
-  const moveClickedTilesTowardNullPosition = (pos: number[]) => {
+  const moveClickedTilesTowardNullPosition = (pos: Position) => {
     const nullPos = getPosOfNull();
     const positionsBetween = getPositionsBetween(pos, nullPos);
 
@@ -197,29 +204,6 @@ export const Puzzle = () => {
     }
 
     return true;
-  };
-
-  const handleMove = (position: number) => {
-    const emptyIndex = tiles.indexOf(-1);
-    const emptyRow = Math.floor(emptyIndex / columns);
-    const emptyCol = emptyIndex % columns;
-
-    const row = Math.floor(position / columns);
-    const col = position % columns;
-
-    if (
-      (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-      (col === emptyCol && Math.abs(row - emptyRow) === 1)
-    ) {
-      const newTiles = [...tiles];
-      const indexDiff = position - emptyIndex;
-      const step = indexDiff > 0 ? 1 : -1;
-      for (let i = emptyIndex; i !== position; i += step) {
-        newTiles[i] = newTiles[i + step];
-      }
-      newTiles[position] = -1;
-      setTiles(newTiles);
-    }
   };
 
   return (
