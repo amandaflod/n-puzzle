@@ -11,7 +11,7 @@ I use `yarn` as package manager. [Corepack](https://github.com/nodejs/corepack) 
 ### Install project
 
 ```sh
-git clone https://github.com/amandaflod/n-puzzle
+git clone https://github.com/amandaflod/n-puzzle.git
 cd n-puzzle
 yarn
 ```
