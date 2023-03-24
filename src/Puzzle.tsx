@@ -55,6 +55,19 @@ const Gif = styled.iframe`
   margin-top: 1rem;
 `;
 
+const populateBoard = (
+  rows: number,
+  columns: number,
+  values: (number | null)[]
+) =>
+  Array(rows)
+    .fill(null)
+    .map((_, i) =>
+      Array(columns)
+        .fill(null)
+        .map((_, j) => values[i * columns + j])
+    );
+
 const getShuffledArray = (arr: (number | null)[]) => {
   const result = [...arr];
   for (let i = result.length - 1; i > 0; i--) {
@@ -114,14 +127,8 @@ const getPositionsBetween = (
 };
 
 export const Puzzle = () => {
-  const [board, setBoard] = useState<Array<Array<number | null>>>(() =>
-    Array(rows)
-      .fill(null)
-      .map((_, i) =>
-        Array(columns)
-          .fill(null)
-          .map((_, j) => values[i * columns + j])
-      )
+  const [board, setBoard] = useState(() =>
+    populateBoard(rows, columns, values)
   );
 
   const setPos = (pos: Position, val: Value) => {
@@ -173,13 +180,7 @@ export const Puzzle = () => {
         .map((_, i) => i + 1),
     ]);
 
-    const newBoard = Array(rows)
-      .fill(null)
-      .map((_, i) =>
-        Array(columns)
-          .fill(null)
-          .map((_, j) => newValues[i * columns + j])
-      );
+    const newBoard = populateBoard(rows, columns, newValues);
 
     setBoard(newBoard);
   };
